@@ -13,7 +13,8 @@ use MichaelDrennen\RemoteFile\RemoteFile;
 use Symfony\Component\DomCrawler\Crawler;
 use ZipArchive;
 
-trait GeonamesConsoleTrait {
+trait GeonamesConsoleTrait
+{
 
     /**
      * @var string  The base download URL for the geonames.org site.
@@ -45,8 +46,9 @@ trait GeonamesConsoleTrait {
     /**
      * Start the timer. Record the start time in startTime()
      */
-    protected function startTimer() {
-        $this->startTime = microtime( TRUE );
+    protected function startTimer()
+    {
+        $this->startTime = microtime(true);
     }
 
     /**
@@ -58,12 +60,13 @@ trait GeonamesConsoleTrait {
      * @throws Exception Thrown if no connection was passed into the artisan command and no default is set up in the
      *                   .env file.
      */
-    protected function setDatabaseConnectionName(): string {
-        $connectionNameOption = $this->option( 'connection' );//...
-        if ( empty( $connectionNameOption ) ):
-            $defaultEnvironmentConnectionName = env( 'DB_CONNECTION' );
-            if ( empty( $defaultEnvironmentConnectionName ) ) {
-                throw new Exception( "setDatabaseConnectionName() failed: There was no connection name passed into the artisan command, and I couldn't find the default connection name from the .env file. You need to have one or the other." );
+    protected function setDatabaseConnectionName(): string
+    {
+        $connectionNameOption = $this->option('connection');//...
+        if (empty($connectionNameOption)):
+            $defaultEnvironmentConnectionName = env('DB_CONNECTION');
+            if (empty($defaultEnvironmentConnectionName)) {
+                throw new Exception("setDatabaseConnectionName() failed: There was no connection name passed into the artisan command, and I couldn't find the default connection name from the .env file. You need to have one or the other.");
             }
             $this->connectionName = $defaultEnvironmentConnectionName;
         else:
@@ -80,34 +83,36 @@ trait GeonamesConsoleTrait {
      * @return bool
      * @throws Exception
      */
-    protected function checkDatabase(): bool {
+    protected function checkDatabase(): bool
+    {
 
-        $databaseConfigurationArray = config( 'database.connections.' . $this->connectionName );
-        if ( ! isset( $databaseConfigurationArray ) ) {
-            throw new Exception( "checkDatabase() failed: Check your project's /config/database.php file. The connection name [" . $this->connectionName . "] doesn't exist." );
+        $databaseConfigurationArray = config('database.connections.' . $this->connectionName);
+        if (!isset($databaseConfigurationArray)) {
+            throw new Exception("checkDatabase() failed: Check your project's /config/database.php file. The connection name [" . $this->connectionName . "] doesn't exist.");
         }
 
         // Check for LOAD DATA permissions.
-        if ( ! isset( $databaseConfigurationArray[ 'options' ] )
-             || !isset($databaseConfigurationArray[ 'options' ][ \PDO::MYSQL_ATTR_LOCAL_INFILE ])
-             || TRUE !== $databaseConfigurationArray[ 'options' ][ \PDO::MYSQL_ATTR_LOCAL_INFILE ] ):
-            throw new Exception( "checkDatabase() failed: Make sure you have this line added to your database connection config in the /config/database.php in your project: 'options' => [\PDO::MYSQL_ATTR_LOCAL_INFILE => true,]" );
-        endif;
+//        if (!isset($databaseConfigurationArray['options'])
+//            || !isset($databaseConfigurationArray['options'][\PDO::MYSQL_ATTR_LOCAL_INFILE])
+//            || true !== $databaseConfigurationArray['options'][\PDO::MYSQL_ATTR_LOCAL_INFILE]):
+//            throw new Exception("checkDatabase() failed: Make sure you have this line added to your database connection config in the /config/database.php in your project: 'options' => [\PDO::MYSQL_ATTR_LOCAL_INFILE => true,]");
+//        endif;
 
 
         try {
-            DB::connection( $this->connectionName )->getPdo();
-        } catch ( \Exception $exception ) {
-            throw new \Exception( "checkDatabase() failed: " . $exception->getMessage() );
+            DB::connection($this->connectionName)->getPdo();
+        } catch (\Exception $exception) {
+            throw new \Exception("checkDatabase() failed: " . $exception->getMessage());
         }
-        return TRUE;
+        return true;
     }
 
     /**
      * Stop the timer. Record the end time in endTime, and the time elapsed in runTime.
      */
-    protected function stopTimer() {
-        $this->endTime = microtime( TRUE );
+    protected function stopTimer()
+    {
+        $this->endTime = microtime(true);
         $this->runTime = $this->endTime - $this->startTime;
     }
 
@@ -117,97 +122,103 @@ trait GeonamesConsoleTrait {
      *
      * @return float    The time elapsed in seconds.
      */
-    protected function getRunTime(): float {
-        if ( $this->runTime > 0 ) {
+    protected function getRunTime(): float
+    {
+        if ($this->runTime > 0) {
             return (float)$this->runTime;
         }
 
-        return (float)microtime( TRUE ) - $this->startTime;
+        return (float)microtime(true) - $this->startTime;
     }
 
     /**
      * @return array An array of all the anchor tag href attributes on the given url parameter.
      * @throws \ErrorException
      */
-    public static function getAllLinksOnDownloadPage(): array {
+    public static function getAllLinksOnDownloadPage(): array
+    {
         $curl = new Curl();
 
-        $curl->get( self::$url );
+        $curl->get(self::$url);
         $html = $curl->response;
 
-        $crawler = new Crawler( $html );
+        $crawler = new Crawler($html);
 
-        return $crawler->filter( 'a' )->each( function ( Crawler $node ) {
-            return $node->attr( 'href' );
-        } );
+        return $crawler->filter('a')->each(function (Crawler $node) {
+            return $node->attr('href');
+        });
     }
 
 
     /**
      * @param Command $command
-     * @param array   $downloadLinks
-     * @param string  $connectionName Necessary if installing on a specific db connection.
+     * @param array $downloadLinks
+     * @param string $connectionName Necessary if installing on a specific db connection.
      *
      * @return array
      * @throws \Exception
      */
-    public static function downloadFiles( Command $command, array $downloadLinks, string $connectionName = NULL ): array {
+    public static function downloadFiles(Command $command, array $downloadLinks, string $connectionName = null): array
+    {
         $localFilePaths = [];
-        foreach ( $downloadLinks as $link ) {
-            $localFilePaths[] = self::downloadFile( $command, $link, $connectionName );
+        foreach ($downloadLinks as $link) {
+            $localFilePaths[] = self::downloadFile($command, $link, $connectionName);
         }
 
         return $localFilePaths;
     }
 
     /**
-     * @param Command $command        The command instance from the console script.
-     * @param string  $link           The absolute path to the remote file we want to download.
-     * @param string  $connectionName Necessary if running the install on a specific connection.
+     * @param Command $command The command instance from the console script.
+     * @param string $link The absolute path to the remote file we want to download.
+     * @param string $connectionName Necessary if running the install on a specific connection.
      *
      * @return string           The absolute local path to the file we just downloaded.
      * @throws Exception
      */
-    public static function downloadFile( Command $command, string $link, string $connectionName = NULL ): string {
+    public static function downloadFile(Command $command, string $link, string $connectionName = null): string
+    {
         $curl = new Curl();
 
-        $basename      = basename( $link );
-        $localFilePath = GeoSetting::getAbsoluteLocalStoragePath( $connectionName ) . DIRECTORY_SEPARATOR . $basename;
+        $basename = basename($link);
+        $localFilePath = GeoSetting::getAbsoluteLocalStoragePath($connectionName) . DIRECTORY_SEPARATOR . $basename;
 
         // Display a progress bar if we can get the remote file size.
-        $fileSize = RemoteFile::getFileSize( $link );
-        if ( $fileSize > 0 ) {
-            $geonamesBar = $command->output->createProgressBar( $fileSize );
+        $fileSize = RemoteFile::getFileSize($link);
+        if ($fileSize > 0) {
+            $geonamesBar = $command->output->createProgressBar($fileSize);
 
-            $geonamesBar->setFormat( "\nDownloading %message% %current%/%max% [%bar%] %percent:3s%%\n" );
+            $geonamesBar->setFormat("\nDownloading %message% %current%/%max% [%bar%] %percent:3s%%\n");
 
-            $geonamesBar->setMessage( $basename );
+            $geonamesBar->setMessage($basename);
 
             $curl->verbose();
-            $curl->setopt( CURLOPT_NOPROGRESS, FALSE );
-            $curl->setopt( CURLOPT_PROGRESSFUNCTION,
-                function ( $resource, $download_size = 0, $downloaded = 0, $upload_size = 0, $uploaded = 0 ) use ( $geonamesBar ) {
-                    $geonamesBar->setProgress( $downloaded );
-                } );
+            $curl->setopt(CURLOPT_NOPROGRESS, false);
+            $curl->setopt(CURLOPT_PROGRESSFUNCTION,
+                function ($resource, $download_size = 0, $downloaded = 0, $upload_size = 0, $uploaded = 0) use (
+                    $geonamesBar
+                ) {
+                    $geonamesBar->setProgress($downloaded);
+                });
         } else {
-            $command->line( "\nWe were unable to get the file size of $link, so we will not display a progress bar. This could take a while, FYI.\n" );
+            $command->line("\nWe were unable to get the file size of $link, so we will not display a progress bar. This could take a while, FYI.\n");
         }
 
-        $curl->get( $link );
+        $curl->get($link);
 
-        if ( $curl->error ) {
-            Log::error( $link, $curl->error_message, $curl->error_code, $connectionName );
-            throw new Exception( "Unable to download the file at [" . $link . "]\n" . $curl->error_message );
+        if ($curl->error) {
+            Log::error($link, $curl->error_message, $curl->error_code, $connectionName);
+            throw new Exception("Unable to download the file at [" . $link . "]\n" . $curl->error_message);
         }
 
-        $data         = $curl->response;
-        $bytesWritten = file_put_contents( $localFilePath, $data );
-        if ( $bytesWritten === FALSE ) {
-            Log::error( $link,
-                        "Unable to create the local file at '" . $localFilePath . "', file_put_contents() returned false. Disk full? Permission problem?",
-                        'local',
-                        $connectionName );
-            throw new Exception( "Unable to create the local file at '" . $localFilePath . "', file_put_contents() returned false. Disk full? Permission problem?" );
+        $data = $curl->response;
+        $bytesWritten = file_put_contents($localFilePath, $data);
+        if ($bytesWritten === false) {
+            Log::error($link,
+                "Unable to create the local file at '" . $localFilePath . "', file_put_contents() returned false. Disk full? Permission problem?",
+                'local',
+                $connectionName);
+            throw new Exception("Unable to create the local file at '" . $localFilePath . "', file_put_contents() returned false. Disk full? Permission problem?");
         }
 
         return $localFilePath;
@@ -216,18 +227,19 @@ trait GeonamesConsoleTrait {
     /**
      * Given a csv file on disk, this function converts it to a php array.
      *
-     * @param   string $localFilePath The absolute path to a csv file in storage.
-     * @param   string $delimiter     In a csv file, the character between fields.
+     * @param string $localFilePath The absolute path to a csv file in storage.
+     * @param string $delimiter In a csv file, the character between fields.
      *
      * @return  array     A multi-dimensional made of the data in the csv file.
      */
-    public static function csvFileToArray( string $localFilePath, $delimiter = "\t" ): array {
+    public static function csvFileToArray(string $localFilePath, $delimiter = "\t"): array
+    {
         $rows = [];
-        if ( ( $handle = fopen( $localFilePath, "r" ) ) !== FALSE ) {
-            while ( ( $data = fgetcsv( $handle, 0, $delimiter ) ) !== FALSE ) {
+        if (($handle = fopen($localFilePath, "r")) !== false) {
+            while (($data = fgetcsv($handle, 0, $delimiter)) !== false) {
                 $rows[] = $data;
             }
-            fclose( $handle );
+            fclose($handle);
         }
 
         return $rows;
@@ -236,24 +248,25 @@ trait GeonamesConsoleTrait {
     /**
      * Unzips the zip file into our geonames storage dir that is set in GeoSettings.
      *
-     * @param   string $localFilePath Absolute local path to the zip archive.
-     * @param string   $connection
+     * @param string $localFilePath Absolute local path to the zip archive.
+     * @param string $connection
      * @throws  Exception
      */
-    public static function unzip( $localFilePath, string $connection = NULL ) {
-        $storage       = GeoSetting::getAbsoluteLocalStoragePath( $connection );
-        $zip           = new ZipArchive;
-        $zipOpenResult = $zip->open( $localFilePath );
-        if ( TRUE !== $zipOpenResult ) {
-            throw new Exception( "Error [" . $zipOpenResult . "] Unable to unzip the archive at " . $localFilePath );
+    public static function unzip($localFilePath, string $connection = null)
+    {
+        $storage = GeoSetting::getAbsoluteLocalStoragePath($connection);
+        $zip = new ZipArchive;
+        $zipOpenResult = $zip->open($localFilePath);
+        if (true !== $zipOpenResult) {
+            throw new Exception("Error [" . $zipOpenResult . "] Unable to unzip the archive at " . $localFilePath);
         }
-        $extractResult = $zip->extractTo( $storage );
-        if ( FALSE === $extractResult ) {
-            throw new Exception( "Unable to unzip the file at " . $localFilePath );
+        $extractResult = $zip->extractTo($storage);
+        if (false === $extractResult) {
+            throw new Exception("Unable to unzip the file at " . $localFilePath);
         }
         $closeResult = $zip->close();
-        if ( FALSE === $closeResult ) {
-            throw new Exception( "After unzipping unable to close the file at " . $localFilePath );
+        if (false === $closeResult) {
+            throw new Exception("After unzipping unable to close the file at " . $localFilePath);
         }
 
         return;
@@ -264,53 +277,59 @@ trait GeonamesConsoleTrait {
      * Pass in an array of absolute local file paths, and this function will extract
      * them to our geonames storage directory.
      *
-     * @param array  $absoluteFilePaths
+     * @param array $absoluteFilePaths
      * @param string $connection
      *
      * @throws Exception
      */
-    public static function unzipFiles( array $absoluteFilePaths, string $connection = NULL ) {
+    public static function unzipFiles(array $absoluteFilePaths, string $connection = null)
+    {
         try {
-            foreach ( $absoluteFilePaths as $absoluteFilePath ) {
-                self::unzip( $absoluteFilePath, $connection );
+            foreach ($absoluteFilePaths as $absoluteFilePath) {
+                self::unzip($absoluteFilePath, $connection);
             }
-        } catch ( \Exception $e ) {
+        } catch (\Exception $e) {
             throw $e;
         }
     }
 
-    protected function disableKeys( string $table ): bool {
-        if(false === $this->isRobustDriver()):
+    protected function disableKeys(string $table): bool
+    {
+        if (false === $this->isRobustDriver()):
             return true;
         endif;
 
         $query = 'ALTER TABLE ' . $table . ' DISABLE KEYS;';
 
-        return DB::connection( $this->connectionName )->getpdo()->exec( $query );
+        return DB::connection($this->connectionName)->getpdo()->exec($query);
     }
 
-    protected function enableKeys( string $table ): bool {
-        if(false === $this->isRobustDriver()):
+    protected function enableKeys(string $table): bool
+    {
+        if (false === $this->isRobustDriver()):
             return true;
         endif;
 
         $query = 'ALTER TABLE ' . $table . ' ENABLE KEYS;';
 
-        return DB::connection( $this->connectionName )->getpdo()->exec( $query );
+        return DB::connection($this->connectionName)->getpdo()->exec($query);
     }
 
-    protected function getDriver(){
-        return config( "database.connections.{$this->connectionName}.driver" );
+    protected function getDriver()
+    {
+        return config("database.connections.{$this->connectionName}.driver");
     }
 
     /**
      * SQLITE doesn't support a lot of the functionality that MySQL supports.
      * @return bool
      */
-    protected function isRobustDriver() {
+    protected function isRobustDriver()
+    {
         $driver = $this->getDriver();
-        switch ( $driver ):
+        switch ($driver):
             case 'mysql':
+            case 'pgsql':
                 return true;
 
             case 'sqlite':
@@ -328,36 +347,38 @@ trait GeonamesConsoleTrait {
      * @param string $workingTableName The name of the 'working' table. The one that gets filled in the background.
      * @throws \Exception
      */
-    protected function makeWorkingTable($tableName, $workingTableName) {
+    protected function makeWorkingTable($tableName, $workingTableName)
+    {
         // Destroy the working table if it exists. We are going to create an empty one now.
-        Schema::connection( $this->connectionName )->dropIfExists( $workingTableName );
+        Schema::connection($this->connectionName)->dropIfExists($workingTableName);
 
         // The syntax for copying a table is a little different depending on the database engine you are using.
         // @TODO Perhaps change this to the isRobustDriver function with an if/else...
         $driver = $this->getDriver();
-        switch ( $driver ):
+        switch ($driver):
             case 'mysql':
+            case 'psql':
                 $statement = 'CREATE TABLE ' . $workingTableName . ' LIKE ' . $tableName . ';';
                 break;
 
             case 'sqlite':
-                $statementToBeModified = DB::connection( $this->connectionName )
-                                           ->table( 'sqlite_master' )
-                                           ->select( 'sql' )
-                                           ->where( 'type', 'table' )
-                                           ->where( 'name', $tableName )
-                                           ->first()->sql;
-                $search                = 'CREATE TABLE "' . $tableName . '"';
-                $replace               = 'CREATE TABLE "' . $workingTableName . '"';
-                $statement             = str_replace( $search, $replace, $statementToBeModified );
+                $statementToBeModified = DB::connection($this->connectionName)
+                    ->table('sqlite_master')
+                    ->select('sql')
+                    ->where('type', 'table')
+                    ->where('name', $tableName)
+                    ->first()->sql;
+                $search = 'CREATE TABLE "' . $tableName . '"';
+                $replace = 'CREATE TABLE "' . $workingTableName . '"';
+                $statement = str_replace($search, $replace, $statementToBeModified);
                 break;
 
             default:
-                throw new \Exception( "Let the maintainer of this library know that you are using the '" . $driver . "' database driver, and that needs to be supported in the commands that create the 'working' tables." );
+                throw new \Exception("Let the maintainer of this library know that you are using the '" . $driver . "' database driver, and that needs to be supported in the commands that create the 'working' tables.");
 
         endswitch;
 
-        DB::connection( $this->connectionName )->statement( $statement );
+        DB::connection($this->connectionName)->statement($statement);
     }
 
 }
