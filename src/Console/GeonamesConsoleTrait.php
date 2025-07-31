@@ -357,10 +357,11 @@ trait GeonamesConsoleTrait
         $driver = $this->getDriver();
         switch ($driver):
             case 'mysql':
-            case 'pgsql':
                 $statement = 'CREATE TABLE ' . $workingTableName . ' LIKE ' . $tableName . ';';
                 break;
-
+            case 'pgsql':
+                $statement = 'CREATE TABLE ' . $workingTableName . ' (LIKE ' . $tableName . ' INCLUDING ALL);';
+                break;
             case 'sqlite':
                 $statementToBeModified = DB::connection($this->connectionName)
                     ->table('sqlite_master')
