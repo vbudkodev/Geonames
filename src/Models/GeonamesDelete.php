@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use MichaelDrennen\Geonames\Events\GeonameDeleted;
 
 class GeonamesDelete extends Model {
+    protected $connection = 'geonames';
     protected $table = 'geonames_deletes';
 
     const date      = 'date';

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PostalCode extends Model {
 
+    protected $connection = 'geonames';
     protected $table      = 'geonames_postal_codes';
 
     /**

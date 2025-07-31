@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class IsoLanguageCode extends Model {
 
+    protected $connection = 'geonames';
     protected $table = 'geonames_iso_language_codes';
 
     /**

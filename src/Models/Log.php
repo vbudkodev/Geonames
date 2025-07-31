@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Log extends Model {
 
+    protected $connection = 'geonames';
+
     /**
      * The table associated with the model.
      *

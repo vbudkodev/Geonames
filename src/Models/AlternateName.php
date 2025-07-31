@@ -5,7 +5,7 @@ namespace MichaelDrennen\Geonames\Models;
 use Illuminate\Database\Eloquent\Model;
 
 class AlternateName extends Model {
-
+    protected $connection = 'geonames';
     protected $table      = 'geonames_alternate_names';
     protected $primaryKey = 'alternateNameId';
 

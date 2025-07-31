@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\File;
  */
 class GeoSetting extends Model {
 
+    protected $connection = 'geonames';
     protected $table = 'geonames_settings';
 
     /**

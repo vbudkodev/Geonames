@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Admin1Code extends Model {
 
+    protected $connection = 'geonames';
     protected $primaryKey = 'geonameid';
     protected $table      = 'geonames_admin_1_codes';
     protected $guarded    = [];
