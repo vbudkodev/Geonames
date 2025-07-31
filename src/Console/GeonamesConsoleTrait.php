@@ -299,7 +299,17 @@ trait GeonamesConsoleTrait
             return true;
         endif;
 
-        $query = 'ALTER TABLE ' . $table . ' DISABLE KEYS;';
+        $driver = $this->getDriver();
+        switch ($driver):
+            case 'mysql':
+                $query = 'ALTER TABLE ' . $table . ' DISABLE KEYS;';
+                break;
+            case 'pgsql':
+                $query = 'ALTER TABLE ' . $table . ' DISABLE TRIGGER ALL;';
+                break;
+            default:
+                return true;
+        endswitch;
 
         return DB::connection($this->connectionName)->getpdo()->exec($query);
     }
@@ -310,7 +320,17 @@ trait GeonamesConsoleTrait
             return true;
         endif;
 
-        $query = 'ALTER TABLE ' . $table . ' ENABLE KEYS;';
+        $driver = $this->getDriver();
+        switch ($driver):
+            case 'mysql':
+                $query = 'ALTER TABLE ' . $table . ' ENABLE KEYS;';
+                break;
+            case 'pgsql':
+                $query = 'ALTER TABLE ' . $table . ' ENABLE TRIGGER ALL;';
+                break;
+            default:
+                return true;
+        endswitch;
 
         return DB::connection($this->connectionName)->getpdo()->exec($query);
     }
