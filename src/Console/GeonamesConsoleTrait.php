@@ -61,7 +61,7 @@ trait GeonamesConsoleTrait {
     protected function setDatabaseConnectionName(): string {
         $connectionNameOption = $this->option( 'connection' );//...
         if ( empty( $connectionNameOption ) ):
-            $defaultEnvironmentConnectionName = env( 'DB_CONNECTION' );
+            $defaultEnvironmentConnectionName = env( 'GEONAMES_DB_CONNECTION' );
             if ( empty( $defaultEnvironmentConnectionName ) ) {
                 throw new Exception( "setDatabaseConnectionName() failed: There was no connection name passed into the artisan command, and I couldn't find the default connection name from the .env file. You need to have one or the other." );
             }
