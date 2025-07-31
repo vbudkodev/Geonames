@@ -357,7 +357,7 @@ trait GeonamesConsoleTrait
         $driver = $this->getDriver();
         switch ($driver):
             case 'mysql':
-            case 'psql':
+            case 'pgsql':
                 $statement = 'CREATE TABLE ' . $workingTableName . ' LIKE ' . $tableName . ';';
                 break;
 
