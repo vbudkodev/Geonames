@@ -37,12 +37,12 @@ class InsertGeonames extends AbstractCommand {
     /**
      * @var string The name of the txt file that contains data from all of the countries.
      */
-    protected $allCountriesZipFileName = 'allCountries.zip';
+    protected $cities500ZipFileName = 'cities500.zip';
 
     /**
      * @var string The name of the txt file that contains data from all of the countries.
      */
-    protected $allCountriesTxtFileName = 'allCountries.txt';
+    protected $cities500TxtFileName = 'cities500.txt';
 
 
     /**
@@ -159,7 +159,7 @@ class InsertGeonames extends AbstractCommand {
 
     /**
      * Every country has a zip file with all of their current geonames records. Also, there is
-     * an allCountries.zip file that contains all of the records.
+     * an cities500.zip file that contains all of the records.
      *
      * @return array    All of the zip file names we downloaded from geonames.org that contain
      *                  records for our geonames table.
@@ -208,7 +208,7 @@ class InsertGeonames extends AbstractCommand {
      */
     private function isCountryZipFile( string $fileName ): bool {
         // If the file name passed in is the file with every country's geonames data, then true.
-        if ( $fileName === $this->allCountriesZipFileName ) {
+        if ( $fileName === $this->cities500ZipFileName ) {
             return TRUE;
         }
 
@@ -228,7 +228,7 @@ class InsertGeonames extends AbstractCommand {
      * @return bool True if the filename is one of the text files that holds geonames records for a country.
      */
     private function isCountryTxtFile( string $fileName ): bool {
-        if ( $fileName === $this->allCountriesTxtFileName ) {
+        if ( $fileName === $this->cities500TxtFileName ) {
             return TRUE;
         }
         if ( preg_match( '/^[A-Z]{2}\.txt$/', $fileName ) === 1 ) {
@@ -250,14 +250,14 @@ class InsertGeonames extends AbstractCommand {
         $textFileNames               = $this->getLocalCountryTxtFileNames();
 
         // If the all countries zip file was downloaded, there is nothing to combine. Just rename the file to master.
-        if ( $this->allCountriesInLocalTxtFiles( $textFileNames ) ) {
+        if ( $this->cities500InLocalTxtFiles( $textFileNames ) ) {
 
-            $absolutePathToAllCountriesTxtFile = GeoSetting::getAbsoluteLocalStoragePathToFile( $this->allCountriesTxtFileName,
+            $absolutePathTocities500TxtFile = GeoSetting::getAbsoluteLocalStoragePathToFile( $this->cities500TxtFileName,
                                                                                                 $this->connectionName );
-            $renameResult                      = rename( $absolutePathToAllCountriesTxtFile,
+            $renameResult                      = rename( $absolutePathTocities500TxtFile,
                                                          $absolutePathToMasterTxtFile );
             if ( $renameResult === FALSE ) {
-                throw new Exception( "We were unable to rename the allCountries to the master file." );
+                throw new Exception( "We were unable to rename the cities500 to the master file." );
             }
 
             return $absolutePathToMasterTxtFile;
@@ -338,7 +338,7 @@ class InsertGeonames extends AbstractCommand {
         $this->line( "\nStarting to insert the records found in " . $localFilePath );
         if ( is_null( $this->numLinesInMasterFile ) ) {
             $numLines = LocalFile::lineCount( $localFilePath );
-            $this->line( "We are going to try to insert " . $numLines . " geoname records from the allCountries file." );
+            $this->line( "We are going to try to insert " . $numLines . " geoname records from the cities500 file." );
         } else {
             $this->line( "We are going to try to insert " . $this->numLinesInMasterFile . " geoname records." );
         }
@@ -413,7 +413,7 @@ SET created_at=NOW(),updated_at=null";
         $this->line( "\nStarting to insert the records found in " . $localFilePath );
         if ( is_null( $this->numLinesInMasterFile ) ) {
             $numLines = LocalFile::lineCount( $localFilePath );
-            $this->line( "We are going to try to insert " . $numLines . " geoname records from the allCountries file." );
+            $this->line( "We are going to try to insert " . $numLines . " geoname records from the cities500 file." );
         } else {
             $this->line( "We are going to try to insert " . $this->numLinesInMasterFile . " geoname records." );
 
@@ -489,15 +489,15 @@ SET created_at=NOW(),updated_at=null";
 
 
     /**
-     * If the allCountries file is found in the geonames storage dir on this box, then we can just use that and
+     * If the cities500 file is found in the geonames storage dir on this box, then we can just use that and
      * ignore any other text files.
      *
      * @param array $txtFiles An array of text file names that we found in the geonames storage dir on this box.
      *
      * @return bool
      */
-    private function allCountriesInLocalTxtFiles( array $txtFiles ): bool {
-        if ( in_array( $this->allCountriesTxtFileName, $txtFiles ) ) {
+    private function cities500InLocalTxtFiles( array $txtFiles ): bool {
+        if ( in_array( $this->cities500TxtFileName, $txtFiles ) ) {
             return TRUE;
         }
 

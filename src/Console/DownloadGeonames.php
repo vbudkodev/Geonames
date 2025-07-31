@@ -87,7 +87,7 @@ class DownloadGeonames extends AbstractCommand {
     protected function getRemoteFilePathsToDownloadForGeonamesTable( array $countries ): array {
         // If the config setting for countries has the wildcard symbol "*", then the user wants data for all countries.
         if ( array_search( "*", $countries ) !== FALSE ) {
-            return [ self::$url . 'allCountries.zip' ];
+            return [ self::$url . 'cities500.zip' ];
         }
 
         $files = [];
