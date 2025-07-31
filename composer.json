@@ -9,24 +9,32 @@
       "email": "michaeldrennen74@gmail.com"
     }
   ],
+  "repositories": [
+
+    {
+      "type": "vcs",
+      "url": "https://github.com/vbudkodev/RemoteFile"
+    }
+  ],
   "require": {
-    "php": "^7.0 || ^8.0 || ^8.1",
+    "php": "^8.4",
     "ext-intl": "*",
     "ext-pdo": "*",
     "ext-curl": "*",
-    "laravel/framework": "^7.0 || ^8.0 || ^9.0",
-    "michaeldrennen/remote-file": "^2.0",
+    "laravel/framework": "*",
+    "michaeldrennen/remote-file": "dev-master",
     "michaeldrennen/local-file": "^2.0",
     "curl/curl": "^2.2",
-    "fabpot/goutte": "^4.0",
-    "nesbot/carbon": "^2.28",
-    "illuminate/support": "^6.0 || ^7.16 || ^8.0 || ^9.0",
-    "illuminate/routing": "^6.0 || ^7.16 || ^8.0 || ^9.0",
-    "illuminate/database": "^6.0 || ^7.16 || ^8.0 || ^9.0"
+    "nesbot/carbon": "*",
+    "illuminate/support": "*",
+    "illuminate/routing": "*",
+    "illuminate/database": "*",
+    "symfony/browser-kit": "^7.0",
+    "symfony/http-client": "^7.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.2",
-    "orchestra/testbench": "^5.3",
+    "orchestra/testbench": "^8.0",
     "php-coveralls/php-coveralls": "^2.2"
   },
   "autoload": {
