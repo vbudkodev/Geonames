@@ -25,7 +25,6 @@
     "michaeldrennen/remote-file": "dev-master",
     "michaeldrennen/local-file": "^2.0",
     "curl/curl": "^2.2",
-    "fabpot/goutte": "^4.0",
     "nesbot/carbon": "*",
     "illuminate/support": "*",
     "illuminate/routing": "*",
