@@ -47,12 +47,12 @@ class PostalCode extends AbstractCommand {
     /**
      *
      */
-    const REMOTE_FILE_NAME = 'cities500.zip';
+    const REMOTE_FILE_NAME = 'allCountries.zip';
 
     /**
      *
      */
-    const LOCAL_TXT_FILE_NAME = 'cities500.txt';
+    const LOCAL_TXT_FILE_NAME = 'allCountries.txt';
 
 
     /**

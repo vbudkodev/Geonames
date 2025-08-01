@@ -10,7 +10,7 @@ return new class extends Migration {
 
     /**
      * Run the migrations.
-     * Source of data: http://download.geonames.org/export/zip/cities500.zip
+     * Source of data: http://download.geonames.org/export/zip/allCountries.zip
      * Sample data:
      * US    99553    Akutan    Alaska    AK    Aleutians East    013            54.143    -165.7854    1
      *
