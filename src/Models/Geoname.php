@@ -10,6 +10,7 @@ use MichaelDrennen\Geonames\Repositories\Admin1CodeRepository;
 use MichaelDrennen\Geonames\Repositories\Admin2CodeRepository;
 
 class Geoname extends Model {
+    protected $connection = 'geonames';
     protected $table = 'geonames';
 
     protected $primaryKey = 'geonameid';
