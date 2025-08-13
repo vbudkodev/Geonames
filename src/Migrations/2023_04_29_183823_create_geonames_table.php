@@ -51,6 +51,7 @@ return new class extends Migration {
             $table->timestamps();                                       // Laravel's created_at and updated_at timestamp fields.
 
             $table->index(['country_code', 'admin1_code', 'admin2_code']);
+            $table->fullText(['name', 'alternatenames', 'asciiname'], 'ft_search');
         });
     }
 
