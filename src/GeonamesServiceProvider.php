@@ -16,8 +16,9 @@ class GeonamesServiceProvider extends \Illuminate\Support\ServiceProvider {
 
         // There are a number of tables that need to be created for our Geonames package.
         // Feel free to create your own additional migrations to create indexes that are appropriate for your application.
-        $this->loadMigrationsFrom( __DIR__ . '/Migrations' );
-
+        if (config('geonames.auto_load_migrations', false)) {
+            $this->loadMigrationsFrom( __DIR__ . '/Migrations' );
+        }
         $this->loadViewsFrom( __DIR__ . '/Views', 'geonames' );
 
 
