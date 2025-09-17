@@ -7,8 +7,6 @@ use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration {
 
-    protected $connection = 'geonames';
-
     /**
      * This small table is filled with static data from geonames.org.
      */

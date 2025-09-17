@@ -7,8 +7,6 @@ use MichaelDrennen\Geonames\Models\GeoSetting;
 
 return new class extends Migration {
 
-    protected $connection = 'geonames';
-
     /**
      * Run the migrations.
      *

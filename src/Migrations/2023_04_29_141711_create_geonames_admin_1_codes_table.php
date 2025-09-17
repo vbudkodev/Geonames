@@ -6,8 +6,6 @@ use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration {
 
-    protected $connection = 'geonames';
-
     /**
      * Run the migrations.
      * Source of data: http://download.geonames.org/export/dump/admin1CodesASCII.txt

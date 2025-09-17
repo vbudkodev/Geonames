@@ -7,8 +7,6 @@ use Illuminate\Database\Migrations\Migration;
 class CreateGeonamesFeatureCodesTable extends Migration
 {
 
-    protected $connection = 'geonames';
-
     /**
      * Run the migrations.
      *
